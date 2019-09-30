@@ -1,0 +1,10 @@
+<project name="ant-ssh test" default="SFTPSuccess"  xmlns:ssh="antlib:com.dovetail.ant.ssh">
+<property environment="env"/>
+<target name="SFTPSuccess">
+<ssh:session username="${env.userid}" password="${env.password}" host="${env.server}" trust="yes">
+<ssh:sftp action="get" dir="/export/home/ngpp/testsuccess/${env.filename}" todir="C:/Users/kapatil/OneDrive - Capgemini/Documents/DEPLOY/DeploymentWorkspace/deployables">  
+        
+      </ssh:sftp>
+	  </ssh:session> 
+	  </target>
+	  </project>

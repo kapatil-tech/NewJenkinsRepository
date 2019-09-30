@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<project name="tools" basedir="." default="info">
+
+	<property file="build.properties"/>
+	
+	<property name="url" value="http://localhost:7001/cartridge/wsapi"/>
+	<property name="username" value=""/>
+	<property name="password" value=""/>
+	<property name="sslKeyStore" value=""/>
+
+	<property name="fileLocation" value=""/>
+	<property name="timeout" value="120"/>
+	
+	<property name="cartridgeName" value=""/>
+	<property name="cartridgeVersion" value=""/>
+	<property name="cartridgeType" value=""/>
+	<property name="pollInterval" value=""/>
+	<property name="pollCount" value=""/>
+
+	<property name="taskjar" value="${basedir}/cartridge-management-client-tools.jar"/>
+	
+	<path id="class.path">
+				<fileset dir="${basedir}/../lib">
+					<include name="**/*.jar"/>
+				</fileset>
+				<pathelement location="${taskjar}"/>
+	
+	</path>
+
+	<taskdef name="deployCartridge" classname="oracle.communications.sce.cartridgemanagement.ws.tools.DeployCartridge" classpathref="class.path"/> 
+	<taskdef name="undeployCartridge" classname="oracle.communications.sce.cartridgemanagement.ws.tools.UndeployCartridge" classpathref="class.path"/> 
+		
+	<target name="deploy-cartridge">
+		<echo message="Deploying cartridge..."/>
+		<deployCartridge url="${url}" username="${username}" password="${password}" sslKeyStore="${sslKeyStore}" fileLocation="${fileLocation}" timeout="${timeout}" pollInterval="${pollInterval}" pollCount="${pollCount}"/>
+	</target>
+	
+	<target name="undeploy-cartridge">
+		<echo message="Undeploying cartridge ${cartridgeName} ${cartridgeVersion}..."/>
+		<undeployCartridge url="${url}" username="${username}" password="${password}" sslKeyStore="${sslKeyStore}" cartridgeName="${cartridgeName}" cartridgeVersion="${cartridgeVersion}" cartridgeType="${cartridgeType}"/>	
+	</target>
+		
+	<target name="info">	
+		<echo message="Available Targets:"/>
+		<echo message="	deploy-cartridge"/>
+		<echo message="	undeploy-cartridge"/>	
+	</target>
+</project>
+

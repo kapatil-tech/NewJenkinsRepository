@@ -1,0 +1,3 @@
+SQL> select max(created_date) from sub_audit where trunc(created_date)= trunc(sysdate) order by created_date desc;
+20-07-2019 20:19:12                                              
+SQL> spool off;

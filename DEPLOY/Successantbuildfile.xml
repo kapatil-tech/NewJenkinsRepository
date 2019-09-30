@@ -1,0 +1,45 @@
+<project name="OSM_Utilities" basedir="." default="." xmlns:props="antlib:org.apache.ant.props">
+   <property environment="env"/>
+   <property file="properties/Environment_DEV1.properties"/>
+   <property file="osm.properties"/>
+   <property file="common.properties"/>
+   <tstamp>
+      <format property="DATE_TIME" pattern="MMM-dd-yyyy-hh:mm" locale="en,GB"/>
+      <format property="DATE" pattern="MMMdd" locale="en,GB"/>
+   </tstamp>
+   <!--Defining the Task Definitions-->
+   <echo message="Defining Custom Tasks"/>
+   <echo message="${antHome}"/>
+   <echo message="${cmtHome}"/>
+  
+  
+   
+
+   
+   <path id="cmt.classpath">
+      <pathelement path="${cmtHome}/lib/cartridge-management-client-tools.jar"/>
+      <fileset dir="${cmtHome}/lib">
+         <include name="*.jar"/>
+      </fileset>
+   </path>
+   <taskdef name="undeployOSMCartridge" classname="oracle.communications.sce.cartridgemanagement.ws.tools.UndeployCartridge" classpath="${cmtHome}/lib/cartridge-management-client-tools.jar"/>
+   <taskdef name="deployOSMCartridge" classname="oracle.communications.sce.cartridgemanagement.ws.tools.DeployCartridge" classpath="${cmtHome}/lib/cartridge-management-client-tools.jar"/>
+   <target name="deployCartridge">
+      <echo message="Unzipping ${Directory_Deploy}/${cartridgeName}.par in ${Directory_Workspace}/tmp"/>
+      <delete dir="${Directory_Workspace}/tmp" failonerror="false"/>
+      <mkdir dir="${Directory_Workspace}/tmp"/>
+      <unzip src="${Directory_Deploy}/${cartridgeName}.par" dest="${Directory_Workspace}/tmp">
+         <patternset>
+            <include name="META-INF/cartridge.xml"/>
+         </patternset>
+      </unzip>
+      <echo message="Loading Deployment Properties..."/>
+      <xslt in="${Directory_Workspace}/tmp/META-INF/cartridge.xml" out="${Directory_Workspace}/tmp/prop.properties" style="./par-properties-generator.xsl"/>
+      <property file="${Directory_Workspace}/tmp/prop.properties"/>
+      <echo message="Deleting tmp folder: ${Directory_Workspace}/tmp"/>
+      <delete dir="${Directory_Workspace}/tmp" failonerror="false"/>
+      <echo message="Deploying ${cartridgeName} to ${env.Environment}"/>
+      <deployOSMCartridge url="${OSM_SERVER_URL_DEPLOY}" username="${OSM_SERVER_USERNAME}" password="${OSM_SERVER_PASSWORD}"  fileLocation="${Directory_Deploy}/${cartridgeName}.par" timeout="${OSM_Deploy_timeout}" pollInterval="${OSM_Deploy_pollInterval}" pollCount="${OSM_Deploy_pollCount}"/>
+      
+   </target>
+</project>
